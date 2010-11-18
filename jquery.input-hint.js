@@ -8,8 +8,7 @@
  * Basic usage:  On the inputs add 'inputHint' to the class attribute, enter the
  * hint text as the title attribute and call $.inputHint();
  *
- * Password inputs are handled intelligently. Works on text and password inputs.
- * (Textarea probably coming soon...)
+ * Password inputs are handled intelligently. Works on text, password and textarea inputs.
  *
  * (c) 2010, Marc Diethelm
  */
@@ -22,7 +21,7 @@
 
 
 	$.fn.inputHint.defaults = {
-		selector: "input.inputHint"
+		selector: ".inputHint"
 	};
 
 
@@ -37,11 +36,11 @@
 				is_password = (this.getAttribute("type") == "password" ? true : false);
 
 			if ( this.value == "" ) {
-				this.setAttribute("value", hint);
+				this.value = hint;
 			}
 
 			if ( is_password ) {
-				this.setAttribute("type", "text");
+				this.type = "text";
 			}
 
 			$this

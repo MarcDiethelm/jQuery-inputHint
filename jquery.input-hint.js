@@ -16,12 +16,24 @@
 
 (function($) {
 
+	$.fn.inputHint = function() {
+
+	};
+
+
+	$.fn.inputHint.defaults = {
+		selector: "input.inputHint"
+	};
+
+
 	$.inputHint = function() {
 
-		$("input.inputHint").each(function() {
+		var options = $.fn.inputHint.defaults;
+
+		$( options.selector ).each(function() {
 
 			var $this = $(this),
-				hint = this.getAttribute("title");
+				hint = this.getAttribute("title"),
 				is_password = (this.getAttribute("type") == "password" ? true : false);
 
 			if ( this.value == "" ) {
@@ -39,11 +51,6 @@
 		})
 		.bind("focus", inputFocusHandler)
 		.bind("blur", inputFocusHandler);
-	};
-
-
-	$.fn.inputHint = function() {
-
 	};
 
 
@@ -70,5 +77,6 @@
 
 		return true;
 	}
+
 
 })(jQuery);

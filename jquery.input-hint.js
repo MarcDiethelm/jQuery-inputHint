@@ -41,6 +41,7 @@
 
 			if ( is_password ) {
 				this.type = "text";
+				this.setAttribute("autocomplete", "off"); // prevent plain text password prefill in mozilla.
 			}
 
 			$this

@@ -33,19 +33,38 @@
 
 			var $this = $(this),
 				hint = this.getAttribute("title"),
-				is_password = (this.getAttribute("type") == "password" ? true : false);
+				is_password = (this.getAttribute("type") == "password" ? true : false),
+				_data = {hint: hint, is_password: is_password};
 
 			if ( this.value == "" ) {
 				this.value = hint;
 			}
 
 			if ( is_password ) {
-				this.type = "text";
-				this.setAttribute("autocomplete", "off"); // prevent plain text password prefill in mozilla.
+				try {
+					this.setAttribute("type", "text"); // fails in IE
+				} catch (e) {
+					var classname = this.className;
+
+					$(this).hide();
+
+					_data.helper =
+
+					$('<input type="text" />')
+					.addClass(classname)
+					.val(hint)
+					.insertAfter(this)
+					.bind("focus", inputFocusHandler)
+					.bind("blur", inputFocusHandler)
+					.data("inputHint", {hint: hint, is_password: is_password, original: this})
+					.get(0);
+				}
+
+				this.setAttribute("autocomplete", "off");
 			}
 
 			$this
-			.data("inputHint", {hint: hint, is_password: is_password})
+			.data("inputHint", _data)
 			.removeAttr("title");
 
 		})
@@ -61,17 +80,30 @@
 			hintData = $input.data("inputHint");
 
 		if ( event.type == "blur" && input.value == "" ) {
-			input.value = hintData.hint;
 
 			if ( hintData.is_password ) {
-				input.setAttribute("type", "text");
+				try {
+					input.setAttribute("type", "text");
+					input.value = hintData.hint;
+				} catch (e) {
+					var helper = $input.hide().data("inputHint").helper;
+					$(helper).val(hintData.hint).show();
+				}
+			} else {
+				input.value = hintData.hint;
 			}
 
 		} else if ( event.type == "focus" && input.value == hintData.hint ) {
 			input.value = "";
 
 			if ( hintData.is_password ) {
-				input.setAttribute("type", "password");
+				try {
+					input.setAttribute("type", "password");
+				} catch (e) {
+					var password = $input.val();
+					var original = $input.hide().data("inputHint").original;
+					$(original).val(password).show().focus();
+				}
 			}
 		}
 

@@ -31,8 +31,24 @@
 
 		$( options.selector ).each(function() {
 
-			var $this = $(this),
-				hint = this.getAttribute("title"),
+			var
+				$this = $(this),
+				hint,
+				parentElement = this.parentNode,
+				title = this.getAttribute("title")
+
+
+			if ( parentElement.tagName == "LABEL" ) {
+				hint = $( parentElement ).text();
+				$( parentElement ).replaceWith(this);
+
+			} else if ( title ) {
+				hint = title;
+			} else { // if you forgot to set a text I'm not wasting any cycles on you, biatch!
+				return true;
+			}
+
+			var
 				is_password = (this.getAttribute("type") == "password" ? true : false),
 				_data = {hint: hint, is_password: is_password};
 

@@ -4,13 +4,29 @@
 	</head>
 
 	<body>
-		<input type="text" class="inputHint" value="" title="input hint" />
+		<input type="text" class="inputHint" value="" title="hint in title attr">
 		<br />
 		<br />
-		<input type="password" class="inputHint" value="" title="password" />
+		<label><input type="text" class="inputHint" value="">parent label</label>
+		<br />
+		<br />
+		<input type="text" class="inputHint" value="" id="foo"><label for="foo">sibling label (not implemented)</label>
+		<br />
+		<br />
+		<input type="password" class="inputHint" value="" title="password">
 		<br />
 		<br />
 		<textarea class="inputHint" title="Bang your head against the keyboard."></textarea>
+		<br />
+		<br />
+		HTML5 input types<br>
+		<label><input type="email" class="inputHint" value="">type email test</label>
+		<br />
+		<br />
+		<label><input type="search" class="inputHint" value="">type search test</label>
+		<br />
+		<br />
+		<label><input type="tel" class="inputHint" value="">type tel test</label>
 
 		<!--<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.js"></script>-->
 		<script src="jquery/jquery-1.4.4.js"></script>

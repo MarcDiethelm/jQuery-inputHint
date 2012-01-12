@@ -35,7 +35,7 @@
 				$this = $(this),
 				hint,
 				parentElement = this.parentNode,
-				title = this.getAttribute("title")
+				title = this.getAttribute("title");
 
 
 			if ( parentElement.tagName == "LABEL" ) {
@@ -49,7 +49,7 @@
 			}
 
 			var
-				is_password = (this.getAttribute("type") == "password" ? true : false),
+				is_password = (!!this.getAttribute("type") == "password"),
 				_data = {hint: hint, is_password: is_password};
 
 			if ( this.value == "" ) {

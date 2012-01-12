@@ -31,12 +31,12 @@
 
 		$( options.selector, $context ).each(function() {
 
-			var
-				$this = $(this),
+			var $this = $(this),
 				hint,
 				parentElement = this.parentNode,
-				title = this.getAttribute("title");
-
+				title = this.getAttribute("title"),
+				is_password,
+				_data;
 
 			if ( parentElement.tagName == "LABEL" ) {
 				hint = $( parentElement ).text();
@@ -48,9 +48,8 @@
 				return true;
 			}
 
-			var
-				is_password = (!!this.getAttribute("type") == "password"),
-				_data = {hint: hint, is_password: is_password};
+			is_password = (this.getAttribute("type") == "password");
+			_data = {hint: hint, is_password: is_password};
 
 			if ( this.value == "" ) {
 				this.value = hint;
@@ -62,7 +61,7 @@
 				} catch (e) {
 					var classname = this.className;
 
-					$(this).hide();
+					$this.hide();
 
 					_data.helper =
 
@@ -70,10 +69,10 @@
 					.addClass(classname)
 					.val(hint)
 					.insertAfter(this)
-					.bind("focus", inputFocusHandler)
-					.bind("blur", inputFocusHandler)
+					.bind("focus", onInputFocus)
+					.bind("blur", onInputFocus)
 					.data("inputHint", {hint: hint, is_password: is_password, original: this})
-					.get(0);
+					[0];
 				}
 
 				this.setAttribute("autocomplete", "off");
@@ -84,12 +83,12 @@
 			.removeAttr("title");
 
 		})
-		.bind("focus", inputFocusHandler)
-		.bind("blur", inputFocusHandler);
+		.bind("focus", onInputFocus)
+		.bind("blur", onInputFocus);
 	};
 
 
-	function inputFocusHandler( event ) {
+	function onInputFocus( event ) {
 
 		var input = event.target,
 			$input = $(input),
@@ -116,8 +115,8 @@
 				try {
 					input.setAttribute("type", "password");
 				} catch (e) {
-					var password = $input.val();
-					var original = $input.hide().data("inputHint").original;
+					var password = $input.val(),
+						original = $input.hide().data("inputHint").original;
 					$(original).val(password).show().focus();
 				}
 			}

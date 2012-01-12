@@ -40,7 +40,7 @@
 
 			if ( parentElement.tagName == "LABEL" ) {
 				hint = $( parentElement ).text();
-				$( parentElement ).replaceWith(this);
+				$( parentElement ).html(this);
 
 			} else if ( title ) {
 				hint = title;

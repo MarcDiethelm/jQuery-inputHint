@@ -21,7 +21,7 @@
 
 
 	$.fn.inputHint.defaults = {
-		selector: ".inputHint"
+		selector: '.inputHint'
 	};
 
 
@@ -34,11 +34,11 @@
 			var $this = $(this),
 				hint,
 				parentElement = this.parentNode,
-				title = this.getAttribute("title"),
+				title = this.getAttribute('title'),
 				is_password,
 				_data;
 
-			if ( parentElement.tagName == "LABEL" ) {
+			if ( parentElement.tagName == 'LABEL' ) {
 				hint = $( parentElement ).text();
 				$( parentElement ).html(this);
 
@@ -48,16 +48,16 @@
 				return true;
 			}
 
-			is_password = (this.getAttribute("type") == "password");
+			is_password = (this.getAttribute('type') == 'password');
 			_data = {hint: hint, is_password: is_password};
 
-			if ( this.value == "" ) {
+			if ( this.value == '' ) {
 				this.value = hint;
 			}
 
 			if ( is_password ) {
 				try {
-					this.setAttribute("type", "text"); // fails in IE
+					this.setAttribute('type', 'text'); // fails in IE
 				} catch (e) {
 					var classname = this.className;
 
@@ -69,22 +69,22 @@
 					.addClass(classname)
 					.val(hint)
 					.insertAfter(this)
-					.bind("focus", onInputFocus)
-					.bind("blur", onInputFocus)
-					.data("inputHint", {hint: hint, is_password: is_password, original: this})
+					.bind('focus', onInputFocus)
+					.bind('blur', onInputFocus)
+					.data('inputHint', {hint: hint, is_password: is_password, original: this})
 					[0];
 				}
 
-				this.setAttribute("autocomplete", "off");
+				this.setAttribute('autocomplete', 'off');
 			}
 
 			$this
-			.data("inputHint", _data)
-			.removeAttr("title");
+			.data('inputHint', _data)
+			.removeAttr('title');
 
 		})
-		.bind("focus", onInputFocus)
-		.bind("blur", onInputFocus);
+		.bind('focus', onInputFocus)
+		.bind('blur', onInputFocus);
 	};
 
 
@@ -92,31 +92,31 @@
 
 		var input = event.target,
 			$input = $(input),
-			hintData = $input.data("inputHint");
+			hintData = $input.data('inputHint');
 
-		if ( event.type == "blur" && input.value == "" ) {
+		if ( event.type == 'blur' && input.value == '' ) {
 
 			if ( hintData.is_password ) {
 				try {
-					input.setAttribute("type", "text");
+					input.setAttribute('type', 'text');
 					input.value = hintData.hint;
 				} catch (e) {
-					var helper = $input.hide().data("inputHint").helper;
+					var helper = $input.hide().data('inputHint').helper;
 					$(helper).val(hintData.hint).show();
 				}
 			} else {
 				input.value = hintData.hint;
 			}
 
-		} else if ( event.type == "focus" && input.value == hintData.hint ) {
-			input.value = "";
+		} else if ( event.type == 'focus' && input.value == hintData.hint ) {
+			input.value = '';
 
 			if ( hintData.is_password ) {
 				try {
-					input.setAttribute("type", "password");
+					input.setAttribute('type', 'password');
 				} catch (e) {
 					var password = $input.val(),
-						original = $input.hide().data("inputHint").original;
+						original = $input.hide().data('inputHint').original;
 					$(original).val(password).show().focus();
 				}
 			}

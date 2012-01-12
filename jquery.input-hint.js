@@ -6,7 +6,7 @@
  * of the input.
  *
  * Basic usage:  On the inputs add 'inputHint' to the class attribute, enter the
- * hint text as the title attribute and call $.inputHint();
+ * hint text as the title attribute and call $(selector).inputHint or $.inputHint();
  *
  * Password inputs are handled intelligently. Works on text, password and textarea inputs.
  *
@@ -15,19 +15,21 @@
 
 (function($) {
 
+	var options;
+
 	$.fn.inputHint = function() {
 		$.inputHint(this.context);
 	};
 
-
 	$.fn.inputHint.defaults = {
-		selector: '.inputHint'
+		selector: '.inputHint',
+		data_name: 'jquery.inputHint'
 	};
 
 
 	$.inputHint = function($context) {
 
-		var options = $.fn.inputHint.defaults;
+		options = $.fn.inputHint.defaults;
 
 		$( options.selector, $context ).each(function() {
 
@@ -71,7 +73,7 @@
 					.insertAfter(this)
 					.bind('focus', onInputFocus)
 					.bind('blur', onInputFocus)
-					.data('inputHint', {hint: hint, is_password: is_password, original: this})
+					.data(options.data_name, {hint: hint, is_password: is_password, original: this})
 					[0];
 				}
 
@@ -79,7 +81,7 @@
 			}
 
 			$this
-			.data('inputHint', _data)
+			.data(options.data_name, _data)
 			.removeAttr('title');
 
 		})
@@ -92,7 +94,7 @@
 
 		var input = event.target,
 			$input = $(input),
-			hintData = $input.data('inputHint');
+			hintData = $input.data(options.data_name);
 
 		if ( event.type == 'blur' && input.value == '' ) {
 
@@ -101,7 +103,7 @@
 					input.setAttribute('type', 'text');
 					input.value = hintData.hint;
 				} catch (e) {
-					var helper = $input.hide().data('inputHint').helper;
+					var helper = $input.hide().data(options.data_name).helper;
 					$(helper).val(hintData.hint).show();
 				}
 			} else {
@@ -116,7 +118,7 @@
 					input.setAttribute('type', 'password');
 				} catch (e) {
 					var password = $input.val(),
-						original = $input.hide().data('inputHint').original;
+						original = $input.hide().data(options.data_name).original;
 					$(original).val(password).show().focus();
 				}
 			}

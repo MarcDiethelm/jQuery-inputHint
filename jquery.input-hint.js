@@ -16,7 +16,7 @@
 (function($) {
 
 	$.fn.inputHint = function() {
-
+		$.inputHint(this.context);
 	};
 
 
@@ -25,11 +25,11 @@
 	};
 
 
-	$.inputHint = function() {
+	$.inputHint = function($context) {
 
 		var options = $.fn.inputHint.defaults;
 
-		$( options.selector ).each(function() {
+		$( options.selector, $context ).each(function() {
 
 			var
 				$this = $(this),

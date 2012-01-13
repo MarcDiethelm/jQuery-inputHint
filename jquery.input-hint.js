@@ -29,37 +29,85 @@
 
 	$.inputHint = function($context) {
 
+		var forIdLabels = {},
+			dom_control_in_label = 'control' in document.createElement('label'),
+			dom_labels_in_input = 'labels' in document.createElement('input'),
+			$labels = $('label', $context),
+			i = 0, label;
+
+		if (!dom_labels_in_input && dom_control_in_label) {
+			// map input.id: label.control (if label.control is defined)
+			for ( ; label = $labels[i]; i++ ) {
+				label.control && $.data(label.control, 'labelEl', label);
+			}
+		} else if ( !dom_labels_in_input && !dom_control_in_label) {
+			for ( ; label = $labels[i]; i++ ) {
+				var for_attr = label.htmlFor;
+				for_attr && (forIdLabels[for_attr] = label);
+			}
+		}
+
 		options = $.fn.inputHint.defaults;
+
 
 		$( options.selector, $context ).each(function() {
 
 			var $this = $(this),
+				$label,
 				hint,
-				parentElement = this.parentNode,
-				title = this.getAttribute('title'),
-				is_password,
+				parentEl,
+				title = this.title,
+				is_pwd,
 				_data;
 
-			if ( parentElement.tagName == 'LABEL' ) {
-				hint = $( parentElement ).text();
-				$( parentElement ).html(this);
+			if (!title) {
 
-			} else if ( title ) {
+				if (dom_labels_in_input) { // Yay HTML5 DOM!!! Fast!
+
+					$label = $(this.labels[0]);
+					hint = $label.text();
+					$.contains(this.labels[0], this) ? $label.html(this) : $label.text('');
+
+				} else if (!dom_labels_in_input && dom_control_in_label) { // Fallback using label.control stored on the input HTML5 DOM & jQuery.data!
+
+					label = $.data(this, 'labelEl');
+					$.removeData(this, 'labelEl');
+					if (label) {
+						$label = $( label );
+						hint = $label.text();
+						$.contains(label, this) ? $label.html(this) : $label.text('');
+					}
+
+				} else {
+					parentEl = this.parentNode;
+					if (parentEl && parentEl.tagName == 'LABEL' ) { // Fallback: is parent a label?
+						hint = $( parentEl ).text();
+						$( parentEl ).html(this);
+
+					} else if ( this.id && this.id in forIdLabels ) {
+						$label = $( forIdLabels[this.id] );
+						hint = $label.text();
+						$label.text('');
+					}
+				}
+
+			} else if (title) {
 				hint = title;
-			} else { // if you forgot to set a text I'm not wasting any cycles on you, biatch!
+			} else { // .inputHint set but no hint found
 				return true;
 			}
+			
 
-			is_password = (this.getAttribute('type') == 'password');
-			_data = {hint: hint, is_password: is_password};
+			is_pwd = (this.type == 'password');
+			_data = {hint: hint, is_pwd: is_pwd};
 
 			if ( this.value == '' ) {
 				this.value = hint;
 			}
 
-			if ( is_password ) {
+			if ( is_pwd ) {
 				try {
-					this.setAttribute('type', 'text'); // fails in IE
+					this.type = 'text'; // fails in IE
 				} catch (e) {
 					var classname = this.className;
 
@@ -71,13 +119,13 @@
 					.addClass(classname)
 					.val(hint)
 					.insertAfter(this)
-					.bind('focus', onInputFocus)
-					.bind('blur', onInputFocus)
-					.data(options.data_name, {hint: hint, is_password: is_password, original: this})
+					.bind('focus', onFocusChange)
+					.bind('blur', onFocusChange)
+					.data(options.data_name, {hint: hint, is_pwd: is_pwd, orig: this})
 					[0];
 				}
 
-				this.setAttribute('autocomplete', 'off');
+				this.autocomplete = 'off';
 			}
 
 			$this
@@ -85,12 +133,12 @@
 			.removeAttr('title');
 
 		})
-		.bind('focus', onInputFocus)
-		.bind('blur', onInputFocus);
+		.bind('focus', onFocusChange)
+		.bind('blur', onFocusChange);
 	};
 
 
-	function onInputFocus( event ) {
+	function onFocusChange( event ) {
 
 		var input = event.target,
 			$input = $(input),
@@ -98,9 +146,9 @@
 
 		if ( event.type == 'blur' && input.value == '' ) {
 
-			if ( hintData.is_password ) {
+			if ( hintData.is_pwd ) {
 				try {
-					input.setAttribute('type', 'text');
+					input.type = 'text';
 					input.value = hintData.hint;
 				} catch (e) {
 					var helper = $input.hide().data(options.data_name).helper;
@@ -113,12 +161,12 @@
 		} else if ( event.type == 'focus' && input.value == hintData.hint ) {
 			input.value = '';
 
-			if ( hintData.is_password ) {
+			if ( hintData.is_pwd ) {
 				try {
-					input.setAttribute('type', 'password');
+					input.type = 'password';
 				} catch (e) {
 					var password = $input.val(),
-						original = $input.hide().data(options.data_name).original;
+						original = $input.hide().data(options.data_name).orig;
 					$(original).val(password).show().focus();
 				}
 			}

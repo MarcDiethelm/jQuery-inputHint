@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<style>
+			body { background: #ccc; }
+			label { background: gold; }
+			button, input, textarea {  }
+			br { line-height: 3em; }
+		</style>
+	</head>
+
+	<body>
+		<h3>jQuery InputHint Demo</h3>
+
+		<button id="go">$('body').inputHint()</button> &lt;-- Click
+		<br>
+		<input type="text" class="inputHint" value="" title="hint from title attr">
+		<br>
+		<label><input type="text" class="inputHint" value="">hint from label (parent)</label>
+		<br>
+		<input type="text" class="inputHint" value="" id="foo"><label for="foo">&quot;for-id&quot; label</label>
+		<br>
+		<input type="password" class="inputHint" value="" title="password">
+		<br>
+		<textarea class="inputHint" title="Bang your head against the keyboard."></textarea>
+
+		<h5>HTML5 input types</h5>
+
+		<label><input type="email" class="inputHint" value="">type email test</label>
+		<br>
+		<label><input type="search" class="inputHint" value="">type search test</label>
+		<br>
+		<label><input type="tel" class="inputHint" value="">type tel test</label>
+
+		<!--<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.js"></script>-->
+		<script src="jquery/jquery-1.4.4.js"></script>
+		<script src="jquery.input-hint.js"></script>
+		<script>
+
+			jQuery(function($) {
+
+				$('#go').click(function() {
+					$('body').inputHint();
+				});
+				
+				// $.inputHint(); // works too
+				// $.inputHint($context); // works too
+			});
+
+		</script>
+
+		<br>
+		<h5>Precedence</h5>
+		<ol>
+			<li>Title attribute</li>
+			<li>Label text</li>
+		</ol>
+		<p>inputHint disables password autofill</p>
+
+	</body>
+</html>

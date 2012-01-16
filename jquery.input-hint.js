@@ -68,7 +68,7 @@
 					hint = $label.text();
 					$.contains(this.labels[0], this) ? $label.html(this) : $label.text('');
 
-				} else if (!dom_labels_in_input && dom_control_in_label) { // Fallback using label.control stored on the input HTML5 DOM & jQuery.data!
+				} else if (!dom_labels_in_input && dom_control_in_label) { // Fallback using label.control stored on the input. HTML5 DOM & jQuery.data!
 
 					label = $.data(this, 'labelEl');
 					$.removeData(this, 'labelEl');
@@ -78,16 +78,27 @@
 						$.contains(label, this) ? $label.html(this) : $label.text('');
 					}
 
-				} else {
+				} else { // no fast method available, use pre-HTML5 DOM
 					parentEl = this.parentNode;
 					if (parentEl && parentEl.tagName == 'LABEL' ) { // Fallback: is parent a label?
 						hint = $( parentEl ).text();
 						$( parentEl ).html(this);
 
-					} else if ( this.id && this.id in forIdLabels ) {
+					} else if ( this.id && this.id in forIdLabels ) { // is it a for-id label?
 						$label = $( forIdLabels[this.id] );
 						hint = $label.text();
 						$label.text('');
+					} else {
+						$label = $(parentEl).closest('label'); // is there a label further up?
+						if ( $label.length ) { // Fallback: is parent a label?
+							hint = '';
+							$label.contents().each(function() {
+								if (this.nodeType == 3) {
+									hint += this.nodeValue;
+									$(this).remove();
+								}
+							});
+						}
 					}
 				}
 
